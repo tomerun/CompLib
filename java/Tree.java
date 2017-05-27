@@ -88,8 +88,74 @@
 			long old = sum(index, index);
 			add(index, val - old);
 		}
-
 	}
+
+  static class SegTree {
+
+    int size;
+    long[] tree;
+
+    SegTree(int size) {
+      this.size = size;
+      int l = 1;
+      while (l < size * 2) {
+        l *= 2;
+      }
+      tree = new long[l];
+    }
+
+    void add(int pos, long v) {
+      add(0, 0, size, pos, v);
+    }
+
+    private void add(int idx, int left, int right, int pos, long v) {
+      tree[idx] += v;
+      tree[idx] %= MOD;
+      if (left + 1 == right) {
+        return;
+      }
+      int mid = (left + right) / 2;
+      if (pos < mid) add(idx * 2 + 1, left, mid, pos, v);
+      if (mid <= pos) add(idx * 2 + 2, mid, right, pos, v);
+    }
+
+    void addNonRec(int pos, long v) {
+      int idx = 0;
+      int left = 0;
+      int right = size;
+      while (true) {
+        tree[idx] += v;
+        tree[idx] %= MOD;
+        if (left + 1 == right) {
+          return;
+        }
+        int mid = (left + right) / 2;
+        if (pos < mid) {
+          idx = idx * 2 + 1;
+          right = mid;
+        } else {
+          idx = idx * 2 + 2;
+          left = mid;
+        }
+      }
+    }
+
+    long get(int lo, int hi) {
+      return get(0, 0, size, lo, hi);
+    }
+
+    private long get(int idx, int left, int right, int lo, int hi) {
+      if (hi <= left || right <= lo) return 0;
+      if (lo <= left && right <= hi) {
+        return tree[idx];
+      }
+      long ret = 0;
+      int mid = (left + right) / 2;
+      if (lo < mid) ret += get(idx * 2 + 1, left, mid, lo, hi);
+      if (mid <= hi) ret += get(idx * 2 + 2, mid, right, lo, hi);
+      return ret % MOD;
+    }
+  }
 
 	static class PersistentSegtree {
 		int lo, hi;
