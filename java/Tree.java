@@ -158,7 +158,7 @@
   }
 
 	static class PersistentSegtree {
-		int lo, hi;
+		int lo, hi; // [lo, hi)
 		PersistentSegtree left, right;
 		int count;
 
