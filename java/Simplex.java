@@ -269,20 +269,13 @@ public class Simplex {
   }
 
   public static void main(String[] args) {
-    int d = 4;
-    Simplex simplex = new Simplex(d);
-    double[] t = new double[d];
-    for (int i = 0; i < d; i++) {
-      t[i] = 1L << (d - i - 1);
-      simplex.setNonnegativity(i);
-      double[] a = new double[d];
-      for (int j = 0; j < i; j++) {
-        a[j] = 2L << (i - j);
-      }
-      a[i] = 1;
-      simplex.addLowerConstraint(a, Math.pow(5, i + 1));
-    }
-    simplex.setTarget(t);
+    Simplex simplex = new Simplex(3);
+    simplex.setTarget(new double[]{-1, -1, -1});
+    simplex.addUpperConstraint(new double[]{2, 7.5, 3}, 10000);
+    simplex.addUpperConstraint(new double[]{20, 5, 10}, 30000);
+    simplex.setNonnegativity(0);
+    simplex.setNonnegativity(1);
+    simplex.setNonnegativity(2);
     Result res = simplex.solve();
     System.err.println(res);
   }
