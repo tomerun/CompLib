@@ -220,12 +220,12 @@ public class Util {
 
 		void union(int a, int b) {
 			int rtA = root(a);
-			int rtb = root(b);
-			if (rtA == rtb) {
+			int rtB = root(b);
+			if (rtA == rtB) {
 				return;
 			}
-			set[rtA] += set[rtb];
-			set[rtb] = rtA;
+			set[rtA] += set[rtB];
+			set[rtB] = rtA;
 		}
 
 		boolean find(int a, int b) {
