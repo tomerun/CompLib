@@ -90,6 +90,87 @@
 		}
 	}
 
+  static class PersistentBIT {
+    int len;
+    Node root;
+
+    static class Node {
+      long v;
+      Node left, right;
+
+      Node() {
+      }
+
+      Node(Node o) {
+        if (o != null) {
+          this.v = o.v;
+          this.left = o.left;
+          this.right = o.right;
+        }
+      }
+    }
+
+    PersistentBIT(int size) {
+      this.len = 1;
+      while (this.len <= size) {
+        this.len *= 2;
+      }
+      this.root = new Node();
+    }
+
+    PersistentBIT(PersistentBIT o) {
+      this.len = o.len;
+      this.root = new Node(o.root);
+    }
+
+    // inclusive, 1-indexed
+    long cumulativeSum(int index) {
+      long ret = 0;
+      int bit = this.len;
+      Node node = this.root;
+      while (node != null && bit > 0) {
+        if ((index & bit) != 0) {
+          node = node.right;
+          if (node != null) ret += node.v;
+        } else {
+          node = node.left;
+        }
+        bit >>= 1;
+      }
+      return ret;
+    }
+
+    // inclusive, 1-indexed
+    long sum(int l, int r) {
+      return cumulativeSum(r) - cumulativeSum(l - 1);
+    }
+
+    PersistentBIT add(int index, long val) {
+      PersistentBIT ret = new PersistentBIT(this);
+      int bit = ret.len;
+      Node node = ret.root;
+      while (bit > 0) {
+        if ((index & bit) != 0) {
+          Node child = new Node(node.right);
+          child.v += val;
+          node.right = child;
+          node = child;
+        } else {
+          Node child = new Node(node.left);
+          node.left = child;
+          node = child;
+        }
+        bit >>= 1;
+      }
+      return ret;
+    }
+
+    PersistentBIT set(int index, long val) {
+      long old = sum(index, index);
+      return add(index, val - old);
+    }
+  }
+
   static class SegTree {
 
     int size;
