@@ -20,7 +20,7 @@
       x[i] /= a.v[i][i];
     }
     return x;
-  }x
+  }
 
   static void lupDecomposition(Matrix a, int[] pi) {
     final int N = a.dim1();
