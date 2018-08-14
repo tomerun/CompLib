@@ -1,5 +1,5 @@
 
-	static int chineseRemainder(long[] mod, long[] rem) {
+	static long chineseRemainder(long[] mod, long[] rem) {
 		long m1 = mod[0];
 		long r1 = rem[0];
 		for (int i = 1; i < mod.length; ++i) {
