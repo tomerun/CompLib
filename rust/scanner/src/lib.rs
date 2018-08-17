@@ -1,38 +1,67 @@
 use std::io;
 use std::io::Read;
 use std::io::BufReader;
-use std::fmt;
-use std::option;
+use std::str::FromStr;
 use std::string::String;
 
 
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
 
-    #[test]
-    fn next_str() {
-    	let mut sc = ::Scanner::new(" a  xyz\nあ表ヶ!\t\r\n".as_bytes());
-      assert_eq!(sc.next_str(), Some(String::from("a")));
-      assert_eq!(sc.next_str(), Some(String::from("xyz")));
-      assert_eq!(sc.next_str(), Some(String::from("あ表ヶ!")));
-      assert_eq!(sc.next_str(), None{});
-    }
+	#[test]
+	fn next_str() {
+		let mut sc = ::Scanner::new(" a  xyz\nあ表ヶ!\t\r\n".as_bytes());
+		assert_eq!(sc.next_str(), Some(String::from("a")));
+		assert_eq!(sc.next_str(), Some(String::from("xyz")));
+		assert_eq!(sc.next_str(), Some(String::from("あ表ヶ!")));
+		assert_eq!(sc.next_str(), None{});
+	}
 
-    #[test]
-    fn next_int() {
-    	let sc = ::Scanner::new("12 -3 0 -0 2147483647, -2147483648".as_bytes());
-    	// eprintln!("{:?}", sc.reader);
-      // assert_eq!(sc.next_i32(), 12);
-      // assert_eq!(sc.next_i32(), -3);
-      // assert_eq!(sc.next_i32(), 0);
-      // assert_eq!(sc.next_i32(), 0);
-      // assert_eq!(sc.next_i32(), 2147483647);
-      // assert_eq!(sc.next_i32(), -2147483648);
-    }
+	#[test]
+	fn next_i32() {
+		let mut sc = ::Scanner::new("12 -3 0 -0 2147483647 -2147483648".as_bytes());
+		assert_eq!(sc.next_i32(), Some(12));
+		assert_eq!(sc.next_i32(), Some(-3));
+		assert_eq!(sc.next_i32(), Some(0));
+		assert_eq!(sc.next_i32(), Some(0));
+		assert_eq!(sc.next_i32(), Some(2147483647));
+		assert_eq!(sc.next_i32(), Some(-2147483648));
+		assert_eq!(sc.next_i32(), None{});
+	}
+
+	#[test]
+	fn next_i64() {
+		let mut sc = ::Scanner::new("12 -3 0 -0 9223372036854775807 -9223372036854775808".as_bytes());
+		assert_eq!(sc.next_i64(), Some(12i64));
+		assert_eq!(sc.next_i64(), Some(-3i64));
+		assert_eq!(sc.next_i64(), Some(0i64));
+		assert_eq!(sc.next_i64(), Some(0i64));
+		assert_eq!(sc.next_i64(), Some(9223372036854775807));
+		assert_eq!(sc.next_i64(), Some(-9223372036854775808));
+		assert_eq!(sc.next_i64(), None{});
+	}
+
+	#[test]
+	fn next_f32() {
+		let mut sc = ::Scanner::new("1 0 -0 0.0001 12345.678".as_bytes());
+		assert_eq!(sc.next_f32(), Some(1.0));
+		assert_eq!(sc.next_f32(), Some(0.0));
+		assert_eq!(sc.next_f32(), Some(0.0));
+		assert_eq!(sc.next_f32(), Some(0.0001));
+		assert_eq!(sc.next_f32(), Some(12345.678));
+		assert_eq!(sc.next_f32(), None{});
+	}
+
+	#[test]
+	fn next_f64() {
+		let mut sc = ::Scanner::new("1 0 -0 0.0001 9876543210.987".as_bytes());
+		assert_eq!(sc.next_f64(), Some(1.0));
+		assert_eq!(sc.next_f64(), Some(0.0));
+		assert_eq!(sc.next_f64(), Some(0.0));
+		assert_eq!(sc.next_f64(), Some(0.0001));
+		assert_eq!(sc.next_f64(), Some(9876543210.987));
+		assert_eq!(sc.next_f64(), None{});
+	}
 
 }
 
@@ -41,7 +70,7 @@ pub struct Scanner<R> {
 	reader: BufReader<R>
 }
 
-impl<R: io::Read + fmt::Debug> Scanner<R> {
+impl<R: io::Read> Scanner<R> {
 	
 	pub fn new(read: R) -> Scanner<R> {
 		Scanner { reader: BufReader::new(read) }
@@ -69,8 +98,29 @@ impl<R: io::Read + fmt::Debug> Scanner<R> {
 		}
 	}
 
-	pub fn next_i32(&self) -> i32 {
-	    12
+	pub fn next_as<S: FromStr>(&mut self) -> Option<S> {
+		if let Some(s) = self.next_str() {
+			if let Ok(v) = S::from_str(&s) {
+				return Some(v)
+			}
+		}
+		None{}
+	}
+
+	pub fn next_i32(&mut self) -> Option<i32> {
+		self.next_as::<i32>()
+	}
+
+	pub fn next_i64(&mut self) -> Option<i64> {
+		self.next_as::<i64>()
+	}
+
+	pub fn next_f32(&mut self) -> Option<f32> {
+		self.next_as::<f32>()
+	}
+
+	pub fn next_f64(&mut self) -> Option<f64> {
+		self.next_as::<f64>()
 	}
 
 	fn skip_whitespace(&mut self, mut buf: &mut [u8]) -> Option<u8> {
