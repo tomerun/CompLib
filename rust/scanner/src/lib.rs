@@ -1,6 +1,4 @@
-use std::io;
-use std::io::Read;
-use std::io::BufReader;
+use std::io::{self, BufReader, Read};
 use std::str::FromStr;
 use std::string::String;
 
@@ -15,6 +13,21 @@ mod tests {
 		assert_eq!(sc.next_str(), Some(String::from("xyz")));
 		assert_eq!(sc.next_str(), Some(String::from("あ表ヶ!")));
 		assert_eq!(sc.next_str(), None{});
+	}
+
+	#[test]
+	fn next_line() {
+		let mut sc = ::Scanner::new(" a  xyz\nあ表ヶ!\t\r\n\n".as_bytes());
+		assert_eq!(sc.next_line(), Some(String::from(" a  xyz")));
+		assert_eq!(sc.next_line(), Some(String::from("あ表ヶ!\t\r")));
+		assert_eq!(sc.next_line(), Some(String::from("")));
+		assert_eq!(sc.next_line(), None{});
+	}
+
+	#[test]
+	fn next_vec() {
+		let mut sc = ::Scanner::new("1 4 9 16 25".as_bytes());
+		assert_eq!(sc.next_vec::<i32>(4), vec![1, 4, 9, 16]);
 	}
 
 	#[test]
@@ -96,6 +109,31 @@ impl<R: io::Read> Scanner<R> {
 			}
 			Some(String::from_utf8(v).unwrap())
 		}
+	}
+
+	pub fn next_line(&mut self) -> Option<String> {
+		let mut buf = [0; 1];
+		let mut v :Vec<u8> = vec![];
+		let mut size = self.reader.read(&mut buf).unwrap();
+		if size == 0 {
+			return None{}
+		}
+		loop {
+			if size == 0 || char::from(buf[0]) == '\n' {
+				return Some(String::from_utf8(v).unwrap())
+			}
+			v.push(buf[0]);
+			size = self.reader.read(&mut buf).unwrap();
+		}
+	}
+
+	pub fn next_vec<S: FromStr>(&mut self, size: u32) -> Vec<S> {
+		let mut v: Vec<S> = vec![];
+		for _ in 0..size {
+			let token = self.next_str().unwrap();
+			v.push(S::from_str(&token).ok().unwrap());
+		}
+		v
 	}
 
 	pub fn next_as<S: FromStr>(&mut self) -> Option<S> {
