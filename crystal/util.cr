@@ -20,6 +20,45 @@ class UnionFind
     return i if @root[i] < 0
     @root[i] = root(@root[i])
   end
+
+  def size(i)
+    -@root[root(i)]
+  end
+end
+
+class BIT(T)
+  def initialize(size : Int)
+    len = 1
+    while len < size
+      len *= 2
+    end
+    @v = Array(T).new(len + 1, T.zero)
+  end
+
+  def cumulative_sum(index : Int)
+    ret = T.zero
+    while index > 0
+      ret += @v[index]
+      index &= index - 1
+    end
+    ret
+  end
+
+  def sum(l : Int, r : Int)
+    cumulative_sum(r) - cumulative_sum(l - 1)
+  end
+
+  def add(index : Int, val : T)
+    while index < @v.size
+      @v[index] += val
+      index += (index & -index)
+    end
+  end
+
+  def set(index : Int, val : T)
+    old = sum(index, index)
+    add(index, val - old)
+  end
 end
 
 class BIT
