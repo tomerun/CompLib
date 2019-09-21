@@ -21,3 +21,44 @@ class UnionFind
     @root[i] = root(@root[i])
   end
 end
+
+class BIT
+  def initialize(size)
+    len = 1
+    while len < size
+      len *= 2
+    end
+    @v = Array(Int64).new(len + 1, 0)
+  end
+
+  def cumulativeSum(index)
+    ret = 0i64
+    while index > 0
+      ret += @v[index]
+      # ret %= MOD
+      index &= index - 1
+    end
+    return ret
+  end
+
+  # inclusive, 1-indexed
+  def sum(l, r)
+    ret = cumulativeSum(r) - cumulativeSum(l - 1)
+    # ret += MOD if ret < 0
+    return ret
+  end
+
+  def add(index, val)
+    while index < @v.size
+      @v[index] += val
+      # @v[index] %= MOD
+      # @v[index] += MOD if (@v[index] < 0)
+      index += (index & -index)
+    end
+  end
+
+  def set(index, val)
+    old = sum(index, index)
+    add(index, val - old)
+  end
+end
