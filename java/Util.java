@@ -246,4 +246,60 @@ public class Util {
 		}
 	}
 
+
+	static class Bits {
+		long[] bits;
+
+		Bits(int size) {
+			bits = new long[(size + 63) / 64];
+		}
+
+		void shiftLOr(int shift) {
+			int m1 = shift >> 6;
+			int m2 = shift & 63;
+			if (m2 == 0) {
+				for (int i = bits.length - 1 - m1; i >= 0; i--) {
+					bits[i + m1] |= bits[i];
+				}
+			} else {
+				for (int i = bits.length - 1 - m1; i >= 0; i--) {
+					int p1 = i + m1 + 1;
+					int p2 = i + m1;
+					long v1 = bits[i] >>> (64 - m2);
+					long v2 = bits[i] << m2;
+					if (p1 < bits.length) {
+						bits[p1] |= v1;
+					}
+					bits[p2] |= v2;
+				}
+			}
+		}
+
+		void copy(long[] buf, int from) {
+			int start = from >> 6;
+			int rem = from & 63;
+			if (rem == 0) {
+				for (int i = start; i < bits.length; i++) {
+					buf[i - start] = bits[i];
+				}
+			} else {
+				for (int i = start; i < bits.length; i++) {
+					buf[i - start] = bits[i] >>> rem;
+					if (i < bits.length - 1) {
+						buf[i - start] |= bits[i + 1] << (64 - rem);
+					}
+				}
+			}
+			if (start > 0) buf[bits.length - start] = 0;
+		}
+
+		boolean get(int pos) {
+			return ((bits[pos >> 6] >>> (pos & 63)) & 1) != 0;
+		}
+
+		void set(int pos) {
+			bits[pos >> 6] |= (1L << (pos & 63));
+		}
+	}
+
 }
