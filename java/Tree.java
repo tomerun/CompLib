@@ -503,6 +503,24 @@
 			return null;
 		}
 
+		int rank(T v) {
+			if (root == null) return 0;
+			Node cur = root;
+			int ret = 0;
+			while (cur != null) {
+				int compare = v.compareTo(cur.val);
+				if (compare == 0) return ret;
+				if (compare < 0) {
+					cur = cur.left;
+				} else {
+					if (cur.left != null) ret += cur.left.size;
+					ret += 1;
+					cur = cur.right;
+				}
+			}
+			return ret;
+		}
+
 		void remove(T v) {
 			root = remove(root, v);
 		}
