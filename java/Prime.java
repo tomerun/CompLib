@@ -30,7 +30,7 @@ public class Prime {
 
 	public static ArrayList<Integer> primes(int max) {
 		if (max < 2) {
-			return new ArrayList<Integer>();
+			return new ArrayList<>();
 		}
 		BitSet primeSet = new BitSet(max / 2);
 		primeSet.set(1, max / 2);
@@ -43,7 +43,7 @@ public class Prime {
 				primeSet.clear(j / 2);
 			}
 		}
-		ArrayList<Integer> list = new ArrayList<Integer>();
+		ArrayList<Integer> list = new ArrayList<>();
 		list.add(2);
 		for (int i = primeSet.nextSetBit(0); i >= 0; i = primeSet.nextSetBit(i + 1)) {
 			list.add(i * 2 + 1);
@@ -52,7 +52,7 @@ public class Prime {
 	}
 
 	public static Map<Integer, Integer> factorize(int i) {
-		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> map = new HashMap<>();
 		int n = i;
 		int index = 0;
 		while (n > 1) {
@@ -71,7 +71,7 @@ public class Prime {
 	}
 
 	public static Map<Integer, Integer> factorize(BigInteger i) {
-		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> map = new HashMap<>();
 		BigInteger[] primeBIs = new BigInteger[primeAry.length];
 		for (int j = 0; j < primeAry.length; j++) {
 			primeBIs[j] = BigInteger.valueOf((primeAry[j]));

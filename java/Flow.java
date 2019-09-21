@@ -1,6 +1,6 @@
 	static class BiMatching {
-		ArrayList<ArrayList<Integer>> left = new ArrayList<ArrayList<Integer>>();
-		ArrayList<ArrayList<Integer>> right = new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> left = new ArrayList<>();
+		ArrayList<ArrayList<Integer>> right = new ArrayList<>();
 		int[] l2r, r2l;
 
 		BiMatching(int n, int m) {
@@ -9,10 +9,10 @@
 			Arrays.fill(l2r, -1);
 			Arrays.fill(r2l, -1);
 			for (int i = 0; i < n; ++i) {
-				left.add(new ArrayList<Integer>());
+				left.add(new ArrayList<>());
 			}
 			for (int i = 0; i < m; ++i) {
-				right.add(new ArrayList<Integer>());
+				right.add(new ArrayList<>());
 			}
 		}
 
@@ -77,7 +77,7 @@
 			while (true) {
 				Arrays.fill(prev, -1);
 				boolean[] visited = new boolean[g.length];
-				Queue<Integer> q = new LinkedList<Integer>();
+				Queue<Integer> q = new LinkedList<>();
 				q.add(src);
 				visited[src] = true;
 				OUT: while (!q.isEmpty()) {
@@ -144,7 +144,7 @@
 				int[] dist = new int[size];
 				Arrays.fill(dist, INF);
 				dist[0] = 0;
-				PriorityQueue<State> q = new PriorityQueue<State>();
+				PriorityQueue<State> q = new PriorityQueue<>();
 				q.add(new State(0, dist[0]));
 				while (!q.isEmpty()) {
 					State st = q.poll();
@@ -212,7 +212,7 @@
 		MinCostFlow(int size) {
 			this.size = size;
 			for (int i = 0; i < size; ++i) {
-				g.add(new ArrayList<Edge>());
+				g.add(new ArrayList<>());
 			}
 		}
 
@@ -235,7 +235,7 @@
 				int[] dist = new int[size];
 				Arrays.fill(dist, INF);
 				dist[0] = 0;
-				PriorityQueue<State> q = new PriorityQueue<State>();
+				PriorityQueue<State> q = new PriorityQueue<>();
 				q.add(new State(0, dist[0]));
 				while (!q.isEmpty()) {
 					State st = q.poll();

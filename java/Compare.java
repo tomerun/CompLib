@@ -8,7 +8,7 @@ public class Compare {
 
 	static ArrayList<Double> read(Scanner sc) {
 		int seed = 0;
-		ArrayList<Double> v = new ArrayList<Double>();
+		ArrayList<Double> v = new ArrayList<>();
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();
 			if (line.indexOf("seed:") != -1) {

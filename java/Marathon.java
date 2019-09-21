@@ -7,8 +7,8 @@
 	}
 
 	static final class Timer {
-		ArrayList<Long> sum = new ArrayList<Long>();
-		ArrayList<Long> start = new ArrayList<Long>();
+		ArrayList<Long> sum = new ArrayList<>();
+		ArrayList<Long> start = new ArrayList<>();
 
 		void start(int i) {
 			if (MEASURE_TIME) {
@@ -39,7 +39,7 @@
 	}
 
 	static final class Counter {
-		ArrayList<Integer> count = new ArrayList<Integer>();
+		ArrayList<Integer> count = new ArrayList<>();
 
 		void add(int i) {
 			if (DEBUG) {

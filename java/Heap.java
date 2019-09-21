@@ -4,7 +4,7 @@
 		Node<T> root;
 
 		void add(T v) {
-			Node<T> nn = new Node<T>(v);
+			Node<T> nn = new Node<>(v);
 			this.root = meld(this.root, nn);
 		}
 
@@ -71,7 +71,7 @@
 
 		RadixHeap() {
 			for (int i = 0; i <= 64; ++i) {
-				buf.add(new ArrayList<Long>());
+				buf.add(new ArrayList<>());
 			}
 		}
 
