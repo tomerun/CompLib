@@ -284,3 +284,109 @@
 	}
 
 
+    static class RelabelToFront {
+        static class Edge {
+            int to, cap, f;
+            Edge rev;
+
+            Edge(int to, int cap) {
+                this.to = to;
+                this.cap = cap;
+            }
+
+            Edge(int to, Edge rev) {
+                this.to = to;
+                this.rev = rev;
+            }
+
+            int cap() {
+                return rev == null ? cap - f : rev.f;
+            }
+        }
+
+        ArrayList<ArrayList<Edge>> g = new ArrayList<>();
+        int[] cur;
+        int[] height;
+        int[] charge;
+
+        RelabelToFront(int V) {
+            for (int i = 0; i < V; i++) {
+                g.add(new ArrayList<>());
+            }
+            cur = new int[V];
+            height = new int[V];
+            charge = new int[V];
+        }
+
+        void addEdge(int b, int e, int c) {
+            Edge edge = new Edge(e, c);
+            g.get(b).add(edge);
+            g.get(e).add(new Edge(b, edge));
+        }
+
+        int calcMaxFlow(int s, int t) {
+            initialize(s);
+            int[] l = new int[g.size() - 2];
+            for (int i = 0, p = 0; i < g.size(); i++) {
+                if (i != s && i != t) {
+                    l[p++] = i;
+                }
+            }
+            int pos = 0;
+            while (pos < l.length) {
+                int v = l[pos];
+                int oldHeight = height[v];
+                discharge(v);
+                if (height[v] > oldHeight) {
+                    // should use LinkedList?
+                    for (int i = pos; i > 0; i--) {
+                        l[i] = l[i - 1];
+                    }
+                    l[0] = v;
+                    pos = 0;
+                }
+                pos++;
+            }
+            return -charge[s];
+        }
+
+        private void discharge(int u) {
+            while (charge[u] > 0) {
+                if (cur[u] == g.get(u).size()) {
+                    // relabel
+                    int newHeight = Integer.MAX_VALUE;
+                    for (Edge e : g.get(u)) {
+                        if (e.cap() > 0) {
+                            newHeight = Math.min(newHeight, height[e.to]);
+                        }
+                    }
+                    height[u] = newHeight + 1;
+                    cur[u] = 0;
+                    continue;
+                }
+                Edge e = g.get(u).get(cur[u]);
+                if (e.cap() > 0 && height[u] == height[e.to] + 1) {
+                    // push
+                    int delta = Math.min(charge[u], e.cap());
+                    if (e.rev == null) {
+                        e.f += delta;
+                    } else {
+                        e.rev.f -= delta;
+                    }
+                    charge[u] -= delta;
+                    charge[e.to] += delta;
+                } else {
+                    cur[u]++;
+                }
+            }
+        }
+
+        private void initialize(int s) {
+            height[s] = g.size();
+            for (Edge e : g.get(s)) {
+                e.f = e.cap;
+                charge[e.to] = e.cap;
+                charge[s] -= e.cap;
+            }
+        }
+    }
