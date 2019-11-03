@@ -1,3 +1,114 @@
+	static final class IntAry {
+		int[] a;
+		int size;
+
+		IntAry(int cap) {
+			a = new int[cap];
+		}
+
+		IntAry() {
+			a = new int[16];
+		}
+
+		void add(int v) {
+			if (size == a.length) {
+				int[] na = new int[a.length * 2];
+				System.arraycopy(a, 0, na, 0, size);
+				a = na;
+			}
+			a[size++] = v;
+		}
+
+		void addAll(IntAry ia) {
+			if (this.size + ia.size < a.length) {
+				int[] na = new int[this.size + ia.size];
+				System.arraycopy(a, 0, na, 0, size);
+				a = na;
+			}
+			System.arraycopy(ia.a, 0, a, size, ia.size);
+			size += ia.size;
+		}
+
+		void clear() {
+			size = 0;
+		}
+
+		int pop() {
+			size--;
+			return a[size];
+		}
+
+		int back() {
+			return a[size - 1];
+		}
+
+		void remove(int pos) {
+			System.arraycopy(a, pos + 1, a, pos, size - pos - 1);
+			size--;
+		}
+
+		void swapRemove(int pos) {
+			swap(a, pos, size - 1);
+			size--;
+		}
+
+		void sort() {
+			Arrays.sort(a, 0, size);
+		}
+	}
+
+	static void swap(int[] a, int p1, int p2) {
+		int tmp = a[p1];
+		a[p1] = a[p2];
+		a[p2] = tmp;
+	}
+
+  static class IntQue {
+      int head, tail;
+      int[] buf;
+
+      IntQue(int size) {
+          buf = new int[size];
+      }
+
+      void push(int v) {
+          buf[tail++] = v;
+      }
+
+      int pop() {
+          return buf[head++];
+      }
+
+      int size() {
+          return tail - head;
+      }
+
+      void clear() {
+          head = tail = 0;
+      }
+  }
+
+  static class CountBuf {
+      int[][] count;
+      int turn;
+
+      CountBuf(int size) {
+          count = new int[size][size];
+      }
+
+      void clear() {
+          turn++;
+      }
+
+      boolean get(int r, int c) {
+          return count[r][c] == turn;
+      }
+
+      void set(int r, int c) {
+          count[r][c] = turn;
+      }
+  }
+
 	static void debug(String str) {
 		if (DEBUG) System.err.println(str);
 	}
