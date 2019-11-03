@@ -109,6 +109,72 @@
       }
   }
 
+  static void nthElement(int[] a, int n) {
+      int l = 0;
+      int r = a.length;
+      while (true) {
+          int lo = l + 1;
+          int hi = r - 1;
+          int len = r - l;
+          if (len > 10) {
+              if ((n - l) * 2 < len ^ a[l] < a[l + 1]) {
+                  swap(a, l, l + 1);
+              }
+          }
+          while (lo <= hi) {
+              if (a[l] < a[lo]) {
+                  swap(a, lo, hi);
+                  --hi;
+              } else {
+                  ++lo;
+              }
+          }
+          swap(a, l, hi);
+          if (hi == n || hi == n - 1) break;
+          if (hi < n) {
+              l = hi + 1;
+          } else {
+              r = hi;
+          }
+      }
+  }
+
+  static <T extends Comparable<T>> void nthElement(ArrayList<T> a, int n) {
+      int l = 0;
+      int r = a.size();
+      while (true) {
+          int lo = l + 1;
+          int hi = r - 1;
+          int len = r - l;
+          if (len > 10) {
+              if ((n - l) * 2 < len ^ a.get(l).compareTo(a.get(l + 1)) < 0) {
+                  swap(a, l, l + 1);
+              }
+          }
+          while (lo <= hi) {
+              if (a.get(l).compareTo(a.get(lo)) < 0) {
+                  swap(a, lo, hi);
+                  --hi;
+              } else {
+                  ++lo;
+              }
+          }
+          swap(a, l, hi);
+          if (hi == n || hi == n - 1) break;
+          if (hi < n) {
+              l = hi + 1;
+          } else {
+              r = hi;
+          }
+      }
+  }
+
+  static <T extends Comparable<T>> void swap(ArrayList<T> a, int p1, int p2) {
+      T tmp = a.get(p1);
+      a.set(p1, a.get(p2));
+      a.set(p2, tmp);
+  }
+
 	static void debug(String str) {
 		if (DEBUG) System.err.println(str);
 	}
