@@ -3,6 +3,63 @@
     int N;
     ArrayList<ArrayList<Integer>> child = new ArrayList<>();
     ArrayList<ArrayList<Integer>> parent = new ArrayList<>();
+    int[] idx;
+
+    void addEdge(int from, int to) {
+      while (child.size() <= from) {
+        child.add(new ArrayList<>());
+      }
+      while (parent.size() <= to) {
+        parent.add(new ArrayList<>());
+      }
+      child.get(from).add(to);
+      parent.get(to).add(from);
+    }
+
+    void calc() {
+      while (child.size() < parent.size()) {
+        child.add(new ArrayList<>());
+      }
+      while (parent.size() < child.size()) {
+        parent.add(new ArrayList<>());
+      }
+      N = child.size();
+      dfs();
+    }
+
+    void dfs() {
+      idx = new int[N];
+      boolean[] used = new boolean[N];
+      int pos = 0;
+      for (int i = 0; i < N; ++i) {
+        if (used[i]) continue;
+        used[i] = true;
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        q.addAll(child.get(i));
+        q.add(-i - 1);
+        while (!q.isEmpty()) {
+          int cur = q.pollFirst();
+          if (cur < 0) {
+            idx[-cur - 1] = pos++;
+            continue;
+          }
+          if (used[cur]) continue;
+          used[cur] = true;
+          q.addFirst(-cur - 1);
+          for (int c : child.get(cur)) {
+            q.addFirst(c);
+          }
+        }
+      }
+    }
+  }
+
+
+  static class SCC {
+
+    int N;
+    ArrayList<ArrayList<Integer>> child = new ArrayList<>();
+    ArrayList<ArrayList<Integer>> parent = new ArrayList<>();
     ArrayList<ArrayList<Integer>> groupToOrig = new ArrayList<>();
     ArrayList<ArrayList<Integer>> groupChild = new ArrayList<>();
     int[] idx;
@@ -141,4 +198,94 @@ class SCC {
 	}
 
 }
+
+  static class SCC {
+
+    int N;
+    ArrayList<ArrayList<Integer>> child = new ArrayList<>();
+    ArrayList<ArrayList<Integer>> parent = new ArrayList<>();
+    int[] idx;
+    int[] group;
+
+    void addEdge(int from, int to) {
+      while (child.size() <= from) {
+        child.add(new ArrayList<>());
+      }
+      while (parent.size() <= to) {
+        parent.add(new ArrayList<>());
+      }
+      child.get(from).add(to);
+      parent.get(to).add(from);
+    }
+
+    void calc() {
+      while (child.size() < parent.size()) {
+        child.add(new ArrayList<>());
+      }
+      while (parent.size() < child.size()) {
+        parent.add(new ArrayList<>());
+      }
+      N = child.size();
+      dfs();
+      revdfs();
+    }
+
+    void dfs() {
+      idx = new int[N];
+      boolean[] used = new boolean[N];
+      int pos = 0;
+      for (int i = 0; i < N; ++i) {
+        if (used[i]) continue;
+        used[i] = true;
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        q.addAll(child.get(i));
+        q.add(-i - 1);
+        while (!q.isEmpty()) {
+          int cur = q.pollFirst();
+          if (cur < 0) {
+            idx[-cur - 1] = pos++;
+            continue;
+          }
+          if (used[cur]) continue;
+          used[cur] = true;
+          q.addFirst(-cur - 1);
+          for (int c : child.get(cur)) {
+            q.addFirst(c);
+          }
+        }
+      }
+    }
+
+    void revdfs() {
+      int gi = 0;
+      group = new int[N];
+      int[] revIdx = new int[N];
+      for (int i = 0; i < N; i++) {
+        revIdx[idx[i]] = i;
+      }
+      boolean[] used = new boolean[N];
+      for (int i = N - 1; i >= 0; --i) {
+        int id = revIdx[i];
+        if (used[id]) continue;
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        used[id] = true;
+        q.addAll(parent.get(id));
+        q.add(-id - 1);
+        while (!q.isEmpty()) {
+          int cur = q.pollFirst();
+          if (cur < 0) {
+            group[-cur - 1] = gi;
+            continue;
+          }
+          if (used[cur]) continue;
+          used[cur] = true;
+          q.addFirst(-cur - 1);
+          for (int c : parent.get(cur)) {
+            q.addFirst(c);
+          }
+        }
+        ++gi;
+      }
+    }
+  }
 
