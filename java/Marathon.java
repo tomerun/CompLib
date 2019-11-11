@@ -202,6 +202,14 @@
 		if (DEBUG) System.err.println(Arrays.deepToString(obj));
 	}
 
+    static void debugf(String fmt, Object... obj) {
+        if (DEBUG) System.err.printf(fmt, obj);
+    }
+
+    static void debugfln(String fmt, Object... obj) {
+        if (DEBUG) System.err.printf(fmt + "\n", obj);
+    }
+
 	static final class Timer {
 		ArrayList<Long> sum = new ArrayList<>();
 		ArrayList<Long> start = new ArrayList<>();
