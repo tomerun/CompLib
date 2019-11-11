@@ -1,67 +1,86 @@
-	static final class IntAry {
-		int[] a;
-		int size;
+    static final class IntAry {
+        int[] a;
+        int size;
 
-		IntAry(int cap) {
-			a = new int[cap];
-		}
+        IntAry() {
+            a = new int[16];
+        }
 
-		IntAry() {
-			a = new int[16];
-		}
+        IntAry(int cap) {
+            a = new int[cap];
+        }
 
-		void add(int v) {
-			if (size == a.length) {
-				int[] na = new int[a.length * 2];
-				System.arraycopy(a, 0, na, 0, size);
-				a = na;
-			}
-			a[size++] = v;
-		}
+        IntAry(int[] a) {
+            this.a = a;
+            this.size = a.length;
+        }
 
-		void addAll(IntAry ia) {
-			if (this.size + ia.size < a.length) {
-				int[] na = new int[this.size + ia.size];
-				System.arraycopy(a, 0, na, 0, size);
-				a = na;
-			}
-			System.arraycopy(ia.a, 0, a, size, ia.size);
-			size += ia.size;
-		}
+        IntAry(IntAry that) {
+            a = that.a.clone();
+            size = that.size;
+        }
 
-		void clear() {
-			size = 0;
-		}
+        @Override
+        public String toString() {
+            return Arrays.toString(Arrays.copyOf(a, size));
+        }
 
-		int pop() {
-			size--;
-			return a[size];
-		}
+        IntAry copyOf(int from, int to) {
+            return new IntAry(Arrays.copyOfRange(this.a, from, to));
+        }
 
-		int back() {
-			return a[size - 1];
-		}
+        void add(int v) {
+            if (size == a.length) {
+                int[] na = new int[a.length * 2];
+                System.arraycopy(a, 0, na, 0, size);
+                a = na;
+            }
+            a[size++] = v;
+        }
 
-		void remove(int pos) {
-			System.arraycopy(a, pos + 1, a, pos, size - pos - 1);
-			size--;
-		}
+        void addAll(IntAry ia) {
+            if (this.size + ia.size < a.length) {
+                int[] na = new int[this.size + ia.size];
+                System.arraycopy(a, 0, na, 0, size);
+                a = na;
+            }
+            System.arraycopy(ia.a, 0, a, size, ia.size);
+            size += ia.size;
+        }
 
-		void swapRemove(int pos) {
-			swap(a, pos, size - 1);
-			size--;
-		}
+        void clear() {
+            size = 0;
+        }
 
-		void sort() {
-			Arrays.sort(a, 0, size);
-		}
-	}
+        int pop() {
+            size--;
+            return a[size];
+        }
 
-	static void swap(int[] a, int p1, int p2) {
-		int tmp = a[p1];
-		a[p1] = a[p2];
-		a[p2] = tmp;
-	}
+        int back() {
+            return a[size - 1];
+        }
+
+        void remove(int pos) {
+            System.arraycopy(a, pos + 1, a, pos, size - pos - 1);
+            size--;
+        }
+
+        void swapRemove(int pos) {
+            swap(a, pos, size - 1);
+            size--;
+        }
+
+        void sort() {
+            Arrays.sort(a, 0, size);
+        }
+    }
+
+    static void swap(int[] a, int p1, int p2) {
+        int tmp = a[p1];
+        a[p1] = a[p2];
+        a[p2] = tmp;
+    }
 
   static class IntQue {
       int head, tail;
