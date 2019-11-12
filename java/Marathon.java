@@ -82,31 +82,6 @@
         a[p2] = tmp;
     }
 
-  static class IntQue {
-      int head, tail;
-      int[] buf;
-
-      IntQue(int size) {
-          buf = new int[size];
-      }
-
-      void push(int v) {
-          buf[tail++] = v;
-      }
-
-      int pop() {
-          return buf[head++];
-      }
-
-      int size() {
-          return tail - head;
-      }
-
-      void clear() {
-          head = tail = 0;
-      }
-  }
-
   static class CountBuf {
       int[][] count;
       int turn;
