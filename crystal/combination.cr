@@ -17,7 +17,7 @@ end
 def pow(v, p)
   return 1 if p == 0
   return v if p == 1
-  ret = pow(v, p / 2)
+  ret = pow(v, p >> 1)
   ret *= ret
   ret %= MOD
   if p % 2 == 1
