@@ -2,7 +2,7 @@ MOD      = 1_000_000_007i64
 FACT     = [1i64]
 FACT_INV = [1i64]
 2001.times do |i|
-  FACT << FACT[i] * (i + 1)
+  FACT << FACT[i] * (i + 1) % MOD
   FACT_INV << inv(FACT[i + 1])
 end
 
@@ -15,14 +15,15 @@ def inv(v)
 end
 
 def pow(v, p)
-  return 1 if p == 0
-  return v if p == 1
-  ret = pow(v, p >> 1)
-  ret *= ret
-  ret %= MOD
-  if p % 2 == 1
-    ret *= v
-    ret %= MOD
+  ret = 1i64
+  while p > 0
+    if (p & 1i64) != 0
+      ret *= v
+      ret %= MOD
+    end
+    v *= v
+    v %= MOD
+    p >>= 1
   end
   ret
 end
