@@ -1,9 +1,12 @@
-MOD      = 1_000_000_007i64
-FACT     = [1i64]
-FACT_INV = [1i64]
-2001.times do |i|
+MOD  = 1_000_000_007i64
+FACT = [1i64]
+100000.times do |i|
   FACT << FACT[i] * (i + 1) % MOD
-  FACT_INV << inv(FACT[i + 1])
+end
+FACT_INV = Array.new(FACT.size, 0i64)
+FACT_INV[-1] = inv(FACT[-1])
+(FACT_INV.size - 2).downto(0) do |i|
+  FACT_INV[i] = FACT_INV[i + 1] * (i + 1) % MOD
 end
 
 def binom(n, k)
