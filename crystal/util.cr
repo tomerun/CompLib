@@ -60,3 +60,45 @@ class BIT(T)
     add(index, val - old)
   end
 end
+
+class BitSet
+  getter :size
+
+  def initialize(size : Int32)
+    @ar = Array(UInt64).new((size + 63) >> 6, 0u64)
+    @size = size
+  end
+
+  def get(i)
+    return (@ar[i >> 6] & (1u64 << (i & 63))) != 0u64
+  end
+
+  def set(i)
+    return @ar[i >> 6] |= (1u64 << (i & 63))
+  end
+
+  def next(i)
+    pos = i >> 6
+    idx = i & 63
+    cur = @ar[pos] & ~((1u64 << idx) - 1)
+    if cur != 0u64
+      return pos * 64 + (cur ^ (cur - 1)).popcount - 1
+      # return pos * 64 + cur.trailing_zeros_count
+    end
+    pos += 1
+    while pos < @ar.size
+      if @ar[pos] != 0u64
+        return pos * 64 + (@ar[pos] ^ (@ar[pos] - 1)).popcount - 1
+        # return pos * 64 + @ar[pos].trailing_zeros_count
+      end
+      pos += 1
+    end
+    return -1
+  end
+
+  def shift(v)
+    n = v >> 6
+    p = v & 63
+    ret = BitSet.new(@size)
+  end
+end
