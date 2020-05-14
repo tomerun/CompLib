@@ -27,6 +27,8 @@ class UnionFind
 end
 
 class BIT(T)
+  # 1-indexed
+
   def initialize(size : Int)
     len = 1
     while len < size
