@@ -103,6 +103,27 @@
       }
   }
 
+    static class CountBuf1D {
+        int[] count;
+        int turn;
+
+        CountBuf1D(int size) {
+            count = new int[size];
+        }
+
+        void clear() {
+            turn++;
+        }
+
+        boolean get(int pos) {
+            return count[pos] == turn;
+        }
+
+        void set(int pos) {
+            count[pos] = turn;
+        }
+    }
+
   static void nthElement(int[] a, int n) {
       int l = 0;
       int r = a.length;

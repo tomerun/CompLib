@@ -30,3 +30,14 @@ def pow(v, p)
   end
   ret
 end
+
+comb = Array.new(1001) { Array.new(1001, 0i64) }
+comb.size.times do |i|
+  comb[i][0] = comb[i][i] = 1i64
+end
+comb.size.times do |i|
+  1.upto(i - 1) do |j|
+    comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1]
+    comb[i][j] -= MOD if comb[i][j] >= MOD
+  end
+end
