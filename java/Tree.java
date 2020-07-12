@@ -509,7 +509,10 @@
 			int ret = 0;
 			while (cur != null) {
 				int compare = v.compareTo(cur.val);
-				if (compare == 0) return ret;
+				if (compare == 0) {
+					if (cur.left != null) ret += cur.left.size
+					return ret;
+				}
 				if (compare < 0) {
 					cur = cur.left;
 				} else {
