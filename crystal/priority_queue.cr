@@ -42,7 +42,7 @@ class PriorityQueue(T)
 
   private def fixup(index : Int32)
     while index > 0
-      parent = (index - 1) / 2
+      parent = (index - 1) // 2
       break if @elem[parent] >= @elem[index]
       @elem[parent], @elem[index] = @elem[index], @elem[parent]
       index = parent
