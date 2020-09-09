@@ -31,6 +31,10 @@ class PriorityQueue(T)
     ret
   end
 
+  def clear
+    @elem.clear
+  end
+
   def decrease_top(new_value : T)
     @elem[0] = new_value
     fixdown(0)
