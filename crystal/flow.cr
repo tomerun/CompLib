@@ -229,21 +229,23 @@ class PrimalDual
     result = 0i64
     h = Array.new(n, 0i64)
     prev = Array(Edge?).new(n, nil)
-    que = PriorityQueue(Tuple(Int64, Int32)).new(n)
+    que = PriorityQueue(Int64).new(n)
     dist = Array.new(n, 0i64)
     while flow > 0
       dist.fill(Int64::MAX // 2)
       dist[s] = 0
-      que.add({0i64, s})
+      que.add(s.to_i64)
       while que.size > 0
         cur = que.pop
-        next if -cur[0] > dist[cur[1]]
-        @g[cur[1]].each do |edge|
+        cv = cur >> 10
+        cp = (cur & 0x3FF).to_i
+        next if -cv > dist[cp]
+        @g[cp].each do |edge|
           next if edge.cap == 0
-          n_cost = dist[cur[1]] + edge.cost + h[cur[1]] - h[edge.to]
+          n_cost = dist[cp] + edge.cost + h[cp] - h[edge.to]
           if n_cost < dist[edge.to]
             dist[edge.to] = n_cost
-            que.add({-n_cost, edge.to})
+            que.add(((-n_cost) << 10) | edge.to)
             prev[edge.to] = edge
           end
         end
