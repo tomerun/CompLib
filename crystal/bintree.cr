@@ -168,6 +168,28 @@ class RBST(T)
     return nil
   end
 
+  def nth(n : Int32) : T
+    # 0-indexed
+    cur = @root
+    while cur
+      ln = cur.left
+      lc = ln ? ln.size : 0
+      if lc > n
+        cur = cur.left
+      elsif lc < n
+        cur = cur.right
+        n -= lc + 1
+      else
+        break
+      end
+    end
+    if cur
+      return cur.val
+    else
+      raise Exception.new("cannot fine")
+    end
+  end
+
   def rank(v : T) : Int32
     # 0-indexed, not count equivalent values
     cur = @root
