@@ -8,6 +8,16 @@ class Matrix(T)
     @d2 = m
   end
 
+  def clone
+    ret = Matrix(T).new(@d1, @d2)
+    @d1.times do |i|
+      @d2.times do |j|
+        ret.a[i][j] = @a[i][j]
+      end
+    end
+    return ret
+  end
+
   def [](idx : Int32)
     return @a[idx]
   end
@@ -38,6 +48,25 @@ class Matrix(T)
       end
     end
     @a = ret
+  end
+
+  def pow(p : Int64, m : Int64)
+    b = Matrix(T).new(@d1, @d2)
+    ret = Matrix(T).new(@d1, @d2)
+    @d1.times do |i|
+      @d2.times do |j|
+        b.a[i][j] = @a[i][j] % m
+      end
+      ret.a[i][i] = 1
+    end
+    while p > 0
+      if (p & 1) != 0
+        ret.mul(b, m)
+      end
+      b.mul(b, m)
+      p >>= 1
+    end
+    return ret
   end
 end
 
