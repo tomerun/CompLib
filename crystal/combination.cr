@@ -31,13 +31,25 @@ def pow(v, p)
   ret
 end
 
-comb = Array.new(1001) { Array.new(1001, 0i64) }
-comb.size.times do |i|
-  comb[i][0] = comb[i][i] = 1i64
+COMBINATION = Array.new(1001) { Array.new(1001, 0i64) }
+COMBINATION.size.times do |i|
+  COMBINATION[i][0] = COMBINATION[i][i] = 1i64
 end
-comb.size.times do |i|
+COMBINATION.size.times do |i|
   1.upto(i - 1) do |j|
-    comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1]
-    comb[i][j] -= MOD if comb[i][j] >= MOD
+    COMBINATION[i][j] = COMBINATION[i - 1][j] + COMBINATION[i - 1][j - 1]
+    COMBINATION[i][j] -= MOD if COMBINATION[i][j] >= MOD
   end
+end
+
+def lucas_theorum(n, k)
+  # C(n, k) % MOD
+  ret = 1
+  while n > 0
+    ret *= COMBINATION[n % MOD][k % MOD]
+    ret %= MOD
+    n //= MOD
+    k //= MOD
+  end
+  return ret
 end
