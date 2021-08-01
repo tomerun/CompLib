@@ -34,3 +34,43 @@ def extgcd(a, b)
   x, y = extgcd(b, a % b)
   return {y, x - (a // b) * y}
 end
+
+def primitive_root(p : Int64)
+  d = 2i64
+  fs = [] of Int64
+  pt = p - 1
+  while d * d <= pt
+    if pt % d == 0
+      fs << d
+      pt //= d
+      while pt % d == 0
+        pt //= d
+      end
+    end
+    d += 1
+  end
+  if pt != 1
+    fs << pt
+  end
+  r = 2
+  while true
+    if fs.all? { |f| pow(r, (p - 1) // f, p) != 1 }
+      return r
+    end
+    r += 1
+  end
+end
+
+def pow(v, p, mod)
+  ret = 1i64
+  while p > 0
+    if (p & 1i64) != 0
+      ret *= v
+      ret %= mod
+    end
+    v *= v
+    v %= mod
+    p >>= 1
+  end
+  ret
+end
