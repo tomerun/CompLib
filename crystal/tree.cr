@@ -1,42 +1,52 @@
-def parents_doubling(parent : Array(Int32))
-  n = parent.size
-  parents = Array(Array(Int32)).new
-  parents << parent + [-1]
-  parents_size = 1
-  while parents_size < n
-    pn = Array.new(n + 1, -1)
-    prev = parents[-1]
-    n.times do |i|
-      pn[i] = prev[prev[i]]
-    end
-    parents << pn
-    parents_size *= 2
-  end
-  return parents
-end
+class LCA
+  @g : Array(Array(Int32))
+  @depth : Array(Int32)
+  @parent : Array(Array(Int32))
 
-def lca(parents : Array(Array(Int32)), u, v, du, dv)
-  if du > dv
-    u, v = v, u
-    du, dv = dv, du
-  end
-  if du != dv
-    diff = dv - du
-    parents.size.times do |i|
-      break if (1 >> i) > diff * 2
-      if (diff & (1 << i)) != 0
-        v = parents[i][v]
+  def initialize(n, es)
+    @g = Array.new(n) { [] of Int32 }
+    es.each do |e|
+      @g[e[0]] << e[1]
+      @g[e[1]] << e[0]
+    end
+    @depth = Array.new(n, -1)
+    @parent = Array.new(Math.log2(n).ceil.to_i) { [-1] * (n + 1) }
+    q = [0]
+    @depth[0] = 0
+    n.times do |i|
+      cur = q[i]
+      @g[cur].each do |adj|
+        next if @depth[adj] != -1
+        q << adj
+        @parent[0][adj] = cur
+        @depth[adj] = @depth[cur] + 1
+      end
+    end
+    (@parent.size - 1).times do |i|
+      n.times do |j|
+        @parent[i + 1][j] = @parent[i][@parent[i][j]]
       end
     end
   end
-  return u if u == v
-  (parents.size - 1).downto(0) do |i|
-    if parents[i][u] != parents[i][v]
-      u = parents[i][u]
-      v = parents[i][v]
+
+  def lca(p, q)
+    if @depth[p] > @depth[q]
+      p, q = q, p
     end
+    diff = @depth[q] - @depth[p]
+    while diff != 0
+      q = @parent[diff.trailing_zeros_count][q]
+      diff &= diff - 1
+    end
+    return p if p == q
+    (@parent.size - 1).downto(0) do |i|
+      if @parent[i][p] != @parent[i][q]
+        p = @parent[i][p]
+        q = @parent[i][q]
+      end
+    end
+    return @parent[0][p]
   end
-  return parents[0][u]
 end
 
 class EulerTour
