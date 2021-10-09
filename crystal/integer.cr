@@ -74,3 +74,26 @@ def pow(v, p, mod)
   end
   ret
 end
+
+def totient(v)
+  c2 = v.trailing_zeros_count
+  v >>= c2
+  ret = c2 == 0 ? 1i64 : 1i64 << (c2 - 1)
+  div = 3i64
+  while div * div <= v
+    if v % div == 0
+      c = 1
+      v //= div
+      while v % div == 0
+        c += 1
+        v //= div
+      end
+      ret *= (div ** (c - 1)) * (div - 1)
+    end
+    div += 2
+  end
+  if v != 1
+    ret *= v - 1
+  end
+  return ret
+end
