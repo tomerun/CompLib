@@ -57,7 +57,6 @@ class Dinic
   end
 
   def calc(s : Int32, t : Int32) : Int32
-    result = 0
     flow = 0
     while true
       bfs(s)
