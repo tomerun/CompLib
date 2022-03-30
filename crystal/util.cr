@@ -104,3 +104,23 @@ class BitSet
     ret = BitSet.new(@size)
   end
 end
+
+def floor_sum(n, m, a, b)
+  # sum{i=0->n-1}(floor((a * i + b) // m))
+  ans = 0i64
+  if a >= m
+    ans += (n - 1) * n // 2 * (a // m)
+    a %= m
+  end
+  if b >= m
+    ans += n * (b // m)
+    b %= m
+  end
+
+  y_max = (a * n + b) // m
+  return ans if y_max == 0
+  x_max = (y_max * m - b)
+  ans += (n - (x_max + a - 1) // a) * y_max
+  ans += floor_sum(y_max, a, m, (a - x_max % a) % a)
+  return ans
+end
