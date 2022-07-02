@@ -43,6 +43,7 @@ class Matrix(T)
         row2 = tmp[j]
         @d2.times do |k|
           sum += row1[k] * row2[k]
+          sum %= MOD
         end
         ret1[j] = sum
       end
@@ -50,20 +51,48 @@ class Matrix(T)
     @a = ret
   end
 
-  def pow(p : Int64, m : Int64)
+  def mul_l(other : Matrix(T))
+    # in-place
+    if other.d2 != @d1
+      raise ArgumentError.new
+    end
+    d3 = @d2
+    tmp = Array.new(d3) { Array.new(@d1, T.zero) }
+    d3.times do |i|
+      tr1 = tmp[i]
+      @d1.times do |j|
+        tr1[j] = @a[j][i]
+      end
+    end
+    other.d1.times do |i|
+      row1 = other.a[i]
+      ret1 = @a[i]
+      d3.times do |j|
+        sum = T.zero
+        row2 = tmp[j]
+        other.d2.times do |k|
+          sum += row1[k] * row2[k]
+          sum %= MOD
+        end
+        ret1[j] = sum
+      end
+    end
+  end
+
+  def pow(p : Int64)
     b = Matrix(T).new(@d1, @d2)
     ret = Matrix(T).new(@d1, @d2)
     @d1.times do |i|
       @d2.times do |j|
-        b.a[i][j] = @a[i][j] % m
+        b.a[i][j] = @a[i][j] % MOD
       end
       ret.a[i][i] = 1
     end
     while p > 0
       if (p & 1) != 0
-        ret.mul(b, m)
+        ret.mul_l(b)
       end
-      b.mul(b, m)
+      b.mul(b)
       p >>= 1
     end
     return ret
