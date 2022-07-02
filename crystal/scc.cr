@@ -1,6 +1,8 @@
 stack = [] of Int32
 visited = Array.new(n, false)
-scc_dfs(g, stack, visited, 0)
+n.times do |i|
+  scc_dfs(g, stack, visited, i)
+end
 visited.fill(false)
 groups = [] of Array(Int32)
 stack.reverse.each do |i|
