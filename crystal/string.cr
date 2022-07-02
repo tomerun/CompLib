@@ -1,9 +1,10 @@
 def z_algo(p : Array(T), t : Array(T)) forall T
+  # find p in t
+  # z[i] := prefix match length starting at (p+(null)+t)[i]
   ret = [] of Int32
   return ret if p.size > t.size
   s = p + [T.zero] + t
   z = Array.new(s.size, 0)
-  z[0] = 0
   left = 0
   right = 0
   1.upto(s.size - 1) do |i|
