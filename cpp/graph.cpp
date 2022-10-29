@@ -37,14 +37,27 @@ class BiMatching{
       int r = left_[l][i];
       if(visited[r]) continue;
       if(dfs(r, visited)){
-	r2l[r] = l;
-	l2r[l] = r;
-	visited[cur] = false;
-	return true;
+      r2l[r] = l;
+      l2r[l] = r;
+      visited[cur] = false;
+      return true;
       }
     }
     visited[cur] = false;
     return false;
+  }
+
+  void dfs_cover(int cur, vector<bool>& visited_l, vector<bool>& visited_r) {
+    if (visited_l[cur]) return;
+    visited_l[cur] = true;
+    for (int adj : left_[cur]) {
+      if (adj == l2r[cur]) continue;
+      if (visited_r[adj]) continue;
+      visited_r[adj] = true;
+      if (r2l[adj] != -1) {
+        dfs_cover(r2l[adj], visited_l, visited_r);
+      }
+    }
   }
 
 public:
@@ -61,17 +74,30 @@ public:
     for(size_t i = 0; i < left_.size(); ++i){
       if(l2r[i] != -1) continue;
       for(size_t j = 0; j < left_[i].size(); ++j){
-	if(dfs(left_[i][j], visited)){
-	  l2r[i] = left_[i][j];
-	  r2l[left_[i][j]] = i;
-	  ++res;
-	  break;
-	}
+        if(dfs(left_[i][j], visited)){
+          l2r[i] = left_[i][j];
+          r2l[left_[i][j]] = i;
+          ++res;
+          break;
+        }
       }
     }
     return res;
   }
 
+  pair<vector<bool>, vector<bool>> point_cover() {
+    vector<bool> visited_l(left_.size(), false);
+    vector<bool> visited_r(right_.size(), false);
+    for (int i = 0; i < left_.size(); ++i) {
+      if (l2r[i] == -1) {
+        dfs_cover(i, visited_l, visited_r);
+      }
+    }
+    for (int i = 0; i < left_.size(); ++i) {
+      visited_l[i] = !visited_l[i];
+    }
+    return make_pair(visited_l, visited_r);
+  }
 };
 
 int main(){
@@ -84,5 +110,3 @@ int main(){
   }
   cout << bm.matching() << endl;
 }
-
-
