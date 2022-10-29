@@ -25,25 +25,6 @@ class SegTree(T)
     end
   end
 
-  def least(lo : Int32, hi : Int32, &block : T -> Bool)
-    ret = @zero
-    bit = 1
-    base = @size
-    while lo < hi
-      if (lo & ((1 << bit) - 1)) != 0
-        ret = @op.call(ret, @ar[base + (lo >> (bit - 1))])
-        lo += 1 << (bit - 1)
-      end
-      if (hi & ((1 << bit) - 1)) != 0
-        ret = @op.call(ret, @ar[base + (hi >> (bit - 1)) - 1])
-        hi -= 1 << (bit - 1)
-      end
-      bit += 1
-      base >>= 1
-    end
-    return ret
-  end
-
   def get(lo : Int32, hi : Int32)
     ret = @zero
     bit = 1
@@ -80,10 +61,9 @@ class RangeSetSegTree(T)
   @ar : Array(T)
   @size : Int32
   @op : Proc(T, T, T)
-  @mul : Proc(Int32, T, T)
   @zero : T
 
-  def initialize(s : Int32, @op : Proc(T, T, T), @mul : Proc(Int32, T, T), @zero : T)
+  def initialize(s : Int32, @op : Proc(T, T, T), @zero : T)
     @size = 1
     while @size < s
       @size *= 2
@@ -104,53 +84,37 @@ class RangeSetSegTree(T)
     end
   end
 
-  def least(lo : Int32, hi : Int32, &block : T -> Bool)
+  def get(pos : Int32)
     ret = @zero
     bit = 1
     base = @size
-    while lo < hi
-      if (lo & ((1 << bit) - 1)) != 0
-        ret = @op.call(ret, @ar[base + (lo >> (bit - 1))])
-        lo += 1 << (bit - 1)
-      end
-      if (hi & ((1 << bit) - 1)) != 0
-        ret = @op.call(ret, @ar[base + (hi >> (bit - 1)) - 1])
-        hi -= 1 << (bit - 1)
-      end
-      bit += 1
-      base >>= 1
-    end
-    return ret
-  end
-
-  def get(lo : Int32, hi : Int32)
-    ret = @zero
-    bit = 1
-    base = @size
-    while lo < hi
-      if (lo & ((1 << bit) - 1)) != 0
-        ret = @op.call(ret, @ar[base + (lo >> (bit - 1))])
-        lo += 1 << (bit - 1)
-      end
-      if (hi & ((1 << bit) - 1)) != 0
-        ret = @op.call(ret, @ar[base + (hi >> (bit - 1)) - 1])
-        hi -= 1 << (bit - 1)
-      end
-      bit += 1
-      base >>= 1
-    end
-    return ret
-  end
-
-  def set(pos : Int32, v : T)
-    base = @size
-    @ar[base + pos] = v
-    pos >>= 1
-    base >>= 1
     while base > 0
-      @ar[base + pos] = @op.call(@ar[base * 2 + pos * 2], @ar[base * 2 + pos * 2 + 1])
-      pos >>= 1
+      ret = @op.call(ret, @ar[base + (pos >> (bit - 1))])
+      bit += 1
       base >>= 1
+    end
+    return ret
+  end
+
+  def set(lo : Int32, hi : Int32, v : T)
+    # [lo, hi)
+    bit = @size.trailing_zeros_count
+    len = @size
+    base = 1
+    while len > 0
+      nlo = (lo + len - 1) & ~(len - 1)
+      phi = hi & ~(len - 1)
+      if nlo + len <= hi
+        i = base + (nlo >> bit)
+        @ar[i] = @op.call(v, @ar[i])
+      end
+      if lo <= phi - len
+        i = base + (phi >> bit) - 1
+        @ar[i] = @op.call(v, @ar[i])
+      end
+      bit -= 1
+      len >>= 1
+      base <<= 1
     end
   end
 end
