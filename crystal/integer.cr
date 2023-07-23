@@ -97,3 +97,20 @@ def totient(v)
   end
   return ret
 end
+
+def chinese_remainder(mod : Array(Int), rem : Array(Int))
+  m1 = mod[0]
+  r1 = rem[0]
+  1.upto(mod.size - 1) do |i|
+    m2 = mod[i]
+    r2 = rem[i]
+    r1 = chinese_remainder(m1, r1, m2, r2)
+    m1 *= m2
+  end
+  return r1
+end
+
+def chinese_remainder(m1, r1, m2, r2)
+  a = ((r2 - r1) % m2 + m2) * inv(m1, m2) % m2
+  return (a * m1 + r1) % (m1 * m2)
+end
