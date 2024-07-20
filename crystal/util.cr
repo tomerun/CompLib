@@ -125,3 +125,25 @@ def floor_sum(n, m, a, b)
   end
   return ans
 end
+
+def uniq_permutations(a : Array(T)) forall T
+  n = a.size
+  while true
+    yield a
+    found = false
+    (n - 2).downto(0) do |i|
+      if a[i] < a[i + 1]
+        j = n - 1
+        while a[j] <= a[i]
+          j -= 1
+        end
+        a.swap(i, j)
+        s = Slice.new(a.to_unsafe + i + 1, n - i - 1)
+        s.unstable_sort!
+        found = true
+        break
+      end
+    end
+    break if !found
+  end
+end
