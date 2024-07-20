@@ -46,10 +46,8 @@ class SqrtDecomposition(Bucket, Value)
 
   def set(lo : Int32, hi : Int32, v : Value)
     # inclusive
-    lo_b = lo // @bucket_len
-    lo_i = lo % @bucket_len
-    hi_b = hi // @bucket_len
-    hi_i = hi % @bucket_len
+    lo_b, lo_i = lo.divmod(@bucket_len)
+    hi_b, hi_i = hi.divmod(@bucket_len)
     if lo_b == hi_b
       @bucket[lo_b].set_edge(lo_i, hi_i, v)
     else
@@ -68,10 +66,8 @@ class SqrtDecomposition(Bucket, Value)
   end
 
   def query(lo : Int32, hi : Int32) : Value
-    lo_b = lo // @bucket_len
-    lo_i = lo % @bucket_len
-    hi_b = hi // @bucket_len
-    hi_i = hi % @bucket_len
+    lo_b, lo_i = lo.divmod(@bucket_len)
+    hi_b, hi_i = hi.divmod(@bucket_len)
     ret = Value.zero
     if lo_b == hi_b
       ret = @bucket[lo_b].query_edge(lo_i, hi_i, ret)
