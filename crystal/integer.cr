@@ -13,6 +13,20 @@ def normalized_linear_diophantine(a, b, c)
   a //= gcd
   b //= gcd
   c //= gcd
+  if a == 0
+    if c % b == 0
+      return {a, c // b}
+    else
+      return nil
+    end
+  end
+  if b == 0
+    if c % a == 0
+      return {c // a, b}
+    else
+      return nil
+    end
+  end
   x, y = extgcd(a, b)
   x *= c
   y *= c
