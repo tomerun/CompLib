@@ -13,11 +13,11 @@ def binom(n, k)
   FACT[n] * FACT_INV[k] % MOD * FACT_INV[n - k] % MOD
 end
 
-def inv(v)
+def inv(v : Int64)
   pow(v, MOD - 2)
 end
 
-def pow(v, p)
+def pow(v : Int64, p)
   ret = 1i64
   while p > 0
     if (p & 1i64) != 0
