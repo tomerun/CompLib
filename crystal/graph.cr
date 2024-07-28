@@ -33,3 +33,48 @@ def lowlink(g : Array(Array(Int32))) : Tuple(Set(Int32), Array(Tuple(Int32, Int3
   end
   return articulations, bridges
 end
+
+def minimum_steiner_tree(g, terminal)
+  n = g.size
+  k = terminal.size
+  # dp[S][v] := vとterminalの部分集合Sを連結ににする最小コスト
+  dp = Array.new(1 << k) { Array.new(n, INF) }
+  k.times do |i|
+    dp[1 << i][terminal[i]] = 0
+  end
+  1.upto((1 << k) - 1) do |i|
+    n.times do |v|
+      s = i
+      while s != 0
+        s = (s - 1) & i
+        dp[i][v] = {dp[i][v], dp[s][v] + dp[i - s][v]}.min
+      end
+    end
+    q = PriorityQueue(Tuple(Int64, Int32)).new(n)
+    dist = Array.new(n, INF)
+    n.times do |v|
+      dist[v] = dp[i][v]
+      q.add({-dist[v], v})
+    end
+    ord = [] of Int32
+    while q.size > 0
+      cd, cv = q.pop
+      cd *= -1
+      next if dist[cv] < cd
+      ord << cv
+      g[cv].each do |nv, cost|
+        nd = cd + cost
+        if nd < dist[nv]
+          dist[nv] = nd
+          q.add({-nd, nv})
+        end
+      end
+    end
+    ord.each do |v|
+      g[v].each do |e, c|
+        dp[i][v] = {dp[i][v], dp[i][e] + c}.min
+      end
+    end
+  end
+  return dp
+end
