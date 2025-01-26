@@ -89,6 +89,37 @@ def pow(v, p, mod)
   ret
 end
 
+def miller_rabin(n)
+  return true if n == 2
+  return false if n % 2 == 0 || n == 1
+  if n < 4759123141i64
+    test = [2i64, 7i64, 61i64]
+  elsif n < 341550071728321i64
+    test = [2i64, 3i64, 5i64, 7i64, 11i64, 13i64, 17i64]
+  else
+    test = [2i64, 3i64, 5i64, 7i64, 11i64, 13i64, 17i64, 19i64, 23i64, 29i64, 31i64, 37i64, 41i64, 43i64, 47i64]
+  end
+  s = (n - 1).trailing_zeros_count
+  d = (n - 1) >> s
+  return !test.any? do |a|
+    y = pow(a.to_i128, d, n)
+    is_composite = y != 1
+    if is_composite
+      (s - 1).times do
+        if y == n - 1
+          is_composite = false
+          break
+        end
+        y = y * y % n
+      end
+      if y == n - 1
+        is_composite = false
+      end
+    end
+    is_composite
+  end
+end
+
 def totient(v)
   c2 = v.trailing_zeros_count
   v >>= c2
