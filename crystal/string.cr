@@ -34,6 +34,103 @@ def z_algo(p : Array(T), t : Array(T)) forall T
   return ret
 end
 
+class RollingHash(T)
+  MUL = 31i64
+  MOD = [1_000_000_007i64, 1_000_000_009i64]
+
+  def initialize(s : Array(T))
+    @a = Array(Array(Int64)).new(MOD.size) { [0i64] }
+    @pow = Array(Array(Int64)).new(MOD.size) { [1i64] }
+    s.each do |v|
+      MOD.size.times do |i|
+        @a[i] << (@a[i][-1] + @pow[i][-1] * v) % MOD[i]
+        @pow[i] << @pow[i][-1] * MUL % MOD[i]
+      end
+    end
+    @pow_rev = Array(Array(Int64)).new(MOD.size) { Array.new(s.size + 1, 0i64) }
+    MOD.size.times do |i|
+      @pow_rev[i][-1] = inv(@pow[i][-1], MOD[i])
+      s.size.downto(1) do |j|
+        @pow_rev[i][j - 1] = @pow_rev[i][j] * MUL % MOD[i]
+      end
+    end
+  end
+
+  def get(l, r)
+    # [l, r)
+    MOD.size.times.map do |i|
+      v = @a[i][r] - @a[i][l]
+      v += MOD[i] if v < 0
+      v *= @pow_rev[i][l]
+      v % MOD[i]
+    end.to_a
+  end
+
+  def inv(v : Int64, mod : Int64)
+    pow(v, mod - 2, mod)
+  end
+
+  def pow(v : Int64, p, mod : Int64)
+    ret = 1i64
+    while p > 0
+      if (p & 1i64) != 0
+        ret *= v
+        ret %= mod
+      end
+      v *= v
+      v %= mod
+      p >>= 1
+    end
+    ret
+  end
+end
+
+# MOD1つだけ版
+class RollingHash(T)
+  MUL =                31i64
+  MOD = 10000000000000061i64
+
+  def initialize(s : Array(T))
+    @a = [0i64]
+    @pow = [1i64]
+    s.each do |v|
+      @a << (@a[-1] + @pow[-1] * v) % MOD
+      @pow << @pow[-1] * MUL % MOD
+    end
+    @pow_rev = Array(Int64).new(s.size + 1, 0i64)
+    @pow_rev[-1] = inv(@pow[-1].to_i128)
+    s.size.downto(1) do |i|
+      @pow_rev[i - 1] = @pow_rev[i] * MUL % MOD
+    end
+  end
+
+  def get(l, r)
+    # [l, r)
+    v = @a[r] - @a[l]
+    v += MOD if v < 0
+    v = (v.to_i128 * @pow_rev[l]) % MOD
+    v.to_i64
+  end
+
+  def inv(v)
+    pow(v, MOD - 2)
+  end
+
+  def pow(v, p)
+    ret = 1.to_i128
+    while p > 0
+      if (p & 1i64) != 0
+        ret *= v
+        ret %= MOD
+      end
+      v *= v
+      v %= MOD
+      p >>= 1
+    end
+    ret.to_i64
+  end
+end
+
 def manacher(s)
   str = ['$']
   s.each do |c|
