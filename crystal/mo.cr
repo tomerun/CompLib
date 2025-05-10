@@ -28,3 +28,39 @@ class Mo
     end
   end
 end
+
+mo = Mo.new(n, BUCKET_SIZE)
+qs.each do |l, r|
+  mo.add_query(l, r)
+end
+mo.build
+cl = 0
+cr = 0
+mo.each do |nl, nr, qi|
+  # expand
+  if cr < nr
+    cr.upto(nr - 1) do |r|
+      # TODO
+    end
+  end
+  if cl > nl
+    (cl - 1).downto(nl) do |l|
+      # TODO
+    end
+  end
+
+  # shrink
+  if cr > nr
+    (cr - 1).downto(nr) do |r|
+      # TODO
+    end
+  end
+  if cl < nl
+    cl.upto(nl - 1) do |l|
+      # TODO
+    end
+  end
+
+  cl = nl
+  cr = nr
+end
